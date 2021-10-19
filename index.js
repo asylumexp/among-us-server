@@ -9,8 +9,6 @@ const io = require('socket.io')(http);
 const uuid = require('uuid/v1');
 const _ = require('lodash');
 const { random } = require('lodash');
-const ip = require("ip");
-console.dir ( ip.address() );
 /**
  * Constants
  */
