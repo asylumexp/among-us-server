@@ -199,7 +199,6 @@ const beginRound = (socket, id) => {
  * server!
  */
 io.on('connection', (socket) => {
-console.log(ip.address)
   // give each socket a random identifier so that we can determine who is who when
   // we're sending messages back and forth!
   socket.emit('requestUserID')
