@@ -18,7 +18,9 @@ const NUM_ROUNDS = 10;
  * Instance Variables
  */
 const rooms = {};
-
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
 
 /**
  * Will connect a socket to a specified room
@@ -236,7 +238,7 @@ io.on('connection', (socket) => {
       client.x = 0;
       client.y = 0;
       client.score = 0;
-      client.userID = 'randomuser12'
+      client.userID = "randomuser12"
       if (client === socket) {
         continue;
       }
@@ -244,6 +246,7 @@ io.on('connection', (socket) => {
         id: client.id,
         x: client.x,
         y: client.y,
+        name: client.userID,
         score: client.score,
         isIt: false,
       });
@@ -322,7 +325,7 @@ io.on('connection', (socket) => {
    */
   socket.on('createRoom', (roomName, callback) => {
     const room = {
-      id: uuid(), // generate a unique id for the new room, that way we don't need to deal with duplicates.
+      id: getRandomInt(9999), // generate a unique id for the new room, that way we don't need to deal with duplicates.
       name: roomName,
       sockets: [],
     };
@@ -335,8 +338,8 @@ io.on('connection', (socket) => {
   /**
    * Gets fired when a player has joined a room.
    */
-  socket.on('joinRoom', (roomId, callback) => {
-    const room = rooms[roomId];
+  socket.on('joinRoomName', (roomName, callback) => {
+    const room = rooms[roomName];
     joinRoom(socket, room);
     callback();
   })
