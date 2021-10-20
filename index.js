@@ -9,6 +9,7 @@ const io = require('socket.io')(http);
 const uuid = require('uuid/v1');
 const _ = require('lodash');
 const { random } = require('lodash');
+const { randomInt } = require('crypto');
 /**
  * Constants
  */
@@ -124,10 +125,10 @@ const beginRound = (socket, id) => {
 
   // the different potential spawning positions on the game map. measured in meters.
   let positions = [
-    {x: 8, y: 8},
-    {x: 120, y: 8},
-    {x: 120, y: 120},
-    {x: 8, y: 120}
+    { x: 8, y: 8 },
+    { x: 120, y: 8 },
+    { x: 120, y: 120 },
+    { x: 8, y: 120 }
   ];
   // Shuffle each position... we're going to use some clever trickery to
   // determine where each player should be spawned. Using lodash for the the shuffle
@@ -203,13 +204,16 @@ const beginRound = (socket, id) => {
 io.on('connection', (socket) => {
   // give each socket a random identifier so that we can determine who is who when
   // we're sending messages back and forth!
+  defaultUser = getRandomInt(10) + "0"
   socket.emit('requestUserID')
   socket.userID = {
     id: socket.id,
-    userID: "User", getRandomInt()
+    username: String
   }
+  socket.userID.username.push(defaultUser)
   socket.id = uuid();
   console.log('a user connected');
+  console.log(socket.userID)
 
   /**
    * Lets us know that players have joined a room and are waiting in the waiting room.
@@ -261,7 +265,7 @@ io.on('connection', (socket) => {
         id: socket.id,
         x: socket.x,
         y: socket.y,
-        name: socket.userID,
+        name: socket.userID.name,
         score: socket.score,
         isIt: false,
       },
@@ -315,8 +319,8 @@ io.on('connection', (socket) => {
   socket.on('getRoomNames', (data, callback) => {
     const roomNames = [];
     for (const id in rooms) {
-      const {name} = rooms[id];
-      const room = {name, id};
+      const { name } = rooms[id];
+      const room = { name, id };
       roomNames.push(room);
     }
 
@@ -347,20 +351,19 @@ io.on('connection', (socket) => {
     callback();
   })
   socket.on('submitName', (playerName, callback) => {
-    socket.userID = playerName
- /*   const playerNames= [socket.id, playerName]
-    const playerNames = {
-      id: socket.id,
-      name: playerName,
-      sockets: [],
-    };
-    const playerNames = [];
-    for (const name in rooms) {
-      const { playerName } = socket.playerName
-      playerNames.push(playerName)
-    }
-*/
-ack()
+    socket.userid.name.push(playerName)
+    /*   const playerNames= [socket.id, playerName]
+       const playerNames = {
+         id: socket.id,
+         name: playerName,
+         sockets: [],
+       };
+       const playerNames = [];
+       for (const name in rooms) {
+         const { playerName } = socket.playerName
+         playerNames.push(playerName)
+       }
+       */
     console.log(socket.userID)
     callback(socket.userID)
   })
@@ -382,6 +385,6 @@ ack()
 
 })
 
-http.listen(PORT, function() {
+http.listen(PORT, function () {
   console.log(`listening on *:${PORT}`);
 })
