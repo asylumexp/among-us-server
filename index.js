@@ -206,10 +206,10 @@ io.on('connection', (socket) => {
   // we're sending messages back and forth!
   defaultUser = getRandomInt(10) + "0"
   socket.emit('requestUserID')
-  socket.userID = {
-    id: socket.id,
-    username: String
-  }
+  socket.userID = [
+    id = socket.id,
+    username = String
+  ]
   socket.userID.username.push(defaultUser)
   socket.id = uuid();
   console.log('a user connected');
