@@ -204,7 +204,10 @@ io.on('connection', (socket) => {
   // give each socket a random identifier so that we can determine who is who when
   // we're sending messages back and forth!
   socket.emit('requestUserID')
-  socket.userID = String();
+  socket.userID = {
+    id: socket.id,
+    userID: "User", getRandomInt()
+  }
   socket.id = uuid();
   console.log('a user connected');
 
