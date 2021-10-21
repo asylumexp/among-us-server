@@ -23,10 +23,10 @@ const rooms = {};
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-/*sleep(2000).then(() => { console.log(socket.userID) }); */
+  function keyValue(key, value){
+    this.Key = key;
+    this.Value = value;
+  };
 
 /**
  * Will connect a socket to a specified room
@@ -211,11 +211,9 @@ io.on('connection', (socket) => {
   // we're sending messages back and forth!
   defaultUser = getRandomInt(10) + "0"
   socket.emit('requestUserID')
-  socket.userID = []
+  users = []
   socket.id = uuid();
   console.log('a user connected');
-  socket.userID.id = socket.id,
-  socket.userID.username = defaultUser
   console.log(socket.userID)
 
   /**
@@ -343,7 +341,7 @@ io.on('connection', (socket) => {
     console.log(roomName)
     // have the socket join the room they've just created.
     joinRoom(socket, room);
-    callback(room);
+    callback(roomName);
   });
   /**
    * Gets fired when a player has joined a room.
@@ -353,7 +351,20 @@ io.on('connection', (socket) => {
     joinRoom(socket, room);
     callback();
   })
-  socket.on('submitName', (playerName, callback) => {
+      socket.on('submitName', function (name) {
+       users.push(name, socket.id);
+
+       // attempt to clean up
+       socket.once('disconnect', function () {
+         var pos = users.indexOf(name);
+
+         if (pos >= 0)
+           users.splice(pos, 1);
+       });
+       console.log(users)
+       callback(users);
+    });
+  socket.on('submitNameOLD', (playerName, callback) => {
     socket.userID.username = playerName
     /*   const playerNames= [socket.id, playerName]
        const playerNames = {
@@ -368,7 +379,7 @@ io.on('connection', (socket) => {
        }
        */
     console.log(socket.userID)
-    callback(socket.userID)
+    callback(socket.userID.username)
   })
 
   /**
