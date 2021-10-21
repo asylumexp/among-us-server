@@ -210,7 +210,7 @@ io.on('connection', (socket) => {
     id = socket.id,
     username = String
   ]
-  socket.userID.username.push(defaultUser)
+  socket.userID.username = defaultUser
   socket.id = uuid();
   console.log('a user connected');
   console.log(socket.userID)
@@ -351,7 +351,7 @@ io.on('connection', (socket) => {
     callback();
   })
   socket.on('submitName', (playerName, callback) => {
-    socket.userid.name.push(playerName)
+    socket.userID.username = playerName
     /*   const playerNames= [socket.id, playerName]
        const playerNames = {
          id: socket.id,
