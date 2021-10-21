@@ -10,6 +10,7 @@ const uuid = require('uuid/v1');
 const _ = require('lodash');
 const { random } = require('lodash');
 const { randomInt } = require('crypto');
+const { waitForDebugger } = require('inspector');
 /**
  * Constants
  */
@@ -22,6 +23,10 @@ const rooms = {};
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+/*sleep(2000).then(() => { console.log(socket.userID) }); */
 
 /**
  * Will connect a socket to a specified room
@@ -206,13 +211,11 @@ io.on('connection', (socket) => {
   // we're sending messages back and forth!
   defaultUser = getRandomInt(10) + "0"
   socket.emit('requestUserID')
-  socket.userID = [
-    id = socket.id,
-    username = String
-  ]
-  socket.userID.username = defaultUser
+  socket.userID = []
   socket.id = uuid();
   console.log('a user connected');
+  socket.userID.id = socket.id,
+  socket.userID.username = defaultUser
   console.log(socket.userID)
 
   /**
@@ -340,7 +343,7 @@ io.on('connection', (socket) => {
     console.log(roomName)
     // have the socket join the room they've just created.
     joinRoom(socket, room);
-    callback(roomName);
+    callback(room);
   });
   /**
    * Gets fired when a player has joined a room.
